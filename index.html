@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="es">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Guía Duels1v1</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: columna de lectura con indice lateral en escritorio; pasos numerados porque montar una arena SI es una secuencia */
+:root {
+  --bg: #f6f5f9;
+  --surface: #ffffff;
+  --fg: #1d1a24;
+  --muted: #5f5a6b;
+  --line: #dcd8e4;
+  --crystal: #8a3fc4;
+  --pot: #c4333f;
+  --code-bg: #efecf4;
+  --ok: #2c8a4b;
+  --font-display: "Chakra Petch", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #15131b; --surface: #1e1b27; --fg: #ece9f3; --muted: #a7a1b5; --line: #332f40;
+    --crystal: #c48bf0; --pot: #f07a83; --code-bg: #262233; --ok: #63c785; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #15131b; --surface: #1e1b27; --fg: #ece9f3; --muted: #a7a1b5; --line: #332f40;
+  --crystal: #c48bf0; --pot: #f07a83; --code-bg: #262233; --ok: #63c785; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: var(--font-body); font-size: 16px; line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+.wrap { max-width: 1060px; margin: 0 auto; display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 48px; }
+nav.toc { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 24px); align-self: start; font-size: 14px; }
+nav.toc p { font-family: var(--font-display); text-transform: uppercase; letter-spacing: .08em; font-size: 12px; color: var(--muted); margin: 0 0 8px; }
+nav.toc ol { list-style: none; padding: 0; margin: 0; display: grid; gap: 4px; }
+nav.toc a { color: var(--muted); text-decoration: none; display: block; padding: 3px 8px; border-radius: 4px; }
+nav.toc a:hover, nav.toc a:focus-visible { color: var(--fg); background: var(--code-bg); outline: none; }
+main { min-width: 0; max-width: 720px; }
+header.top { margin-bottom: 40px; }
+.eyebrow { font-family: var(--font-display); text-transform: uppercase; letter-spacing: .1em; font-size: 13px; color: var(--crystal); margin: 0; }
+h1 { font-family: var(--font-display); font-size: clamp(32px, 6vw, 46px); line-height: 1.1; margin: 6px 0 12px; text-wrap: balance; }
+h1 .vs { color: var(--muted); font-weight: 500; }
+h2 { font-family: var(--font-display); font-size: 26px; margin: 56px 0 12px; text-wrap: balance; scroll-margin-top: 24px; }
+h3 { font-size: 17px; margin: 28px 0 8px; }
+p { margin: 0 0 14px; }
+.lead { font-size: 18px; color: var(--muted); max-width: 62ch; }
+.modes { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+.chip { font-family: var(--font-display); font-size: 14px; padding: 4px 12px; border-radius: 999px; border: 1px solid currentColor; }
+.chip.c { color: var(--crystal); } .chip.p { color: var(--pot); }
+code { font-family: var(--font-mono); font-size: .9em; background: var(--code-bg); padding: 1px 6px; border-radius: 4px; overflow-wrap: anywhere; }
+.cmd { display: flex; align-items: stretch; background: var(--code-bg); border-radius: 6px; margin: 6px 0; overflow: hidden; }
+.cmd pre { margin: 0; padding: 10px 14px; font-family: var(--font-mono); font-size: 14px; overflow-x: auto; flex: 1; min-width: 0; }
+.cmd button { font: 600 12px var(--font-body); background: transparent; color: var(--muted); border: 0; border-left: 1px solid var(--line); padding: 0 14px; cursor: pointer; }
+.cmd button:hover, .cmd button:focus-visible { color: var(--fg); outline: none; background: var(--line); }
+pre.block { background: var(--code-bg); border-radius: 6px; padding: 14px; font-family: var(--font-mono); font-size: 14px; overflow-x: auto; margin: 8px 0 16px; }
+ol.steps { list-style: none; counter-reset: s; padding: 0; margin: 16px 0; display: grid; gap: 22px; }
+ol.steps > li { counter-increment: s; display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 14px; }
+ol.steps > li::before { content: counter(s); font-family: var(--font-display); font-weight: 700; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--surface); border: 1px solid var(--line); color: var(--crystal); }
+ol.steps > li > div { min-width: 0; }
+ol.steps strong { display: block; margin-bottom: 4px; }
+.note { border-left: 3px solid var(--crystal); background: var(--surface); padding: 12px 16px; border-radius: 0 6px 6px 0; margin: 16px 0; font-size: 15px; }
+.note.warn { border-color: var(--pot); }
+.table-wrap { overflow-x: auto; margin: 12px 0 20px; border: 1px solid var(--line); border-radius: 6px; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; background: var(--surface); }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--font-display); font-weight: 500; text-transform: uppercase; letter-spacing: .06em; font-size: 12px; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+td code { white-space: nowrap; }
+.legend { display: flex; flex-wrap: wrap; gap: 16px; margin: 10px 0 16px; font-size: 14px; }
+.legend span { display: inline-flex; align-items: center; gap: 8px; }
+.dot { width: 12px; height: 12px; border-radius: 2px; display: inline-block; }
+.arenas { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 16px; margin: 12px 0; }
+.arenas div { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; }
+.arenas h4 { margin: 0 0 6px; font-family: var(--font-display); font-size: 15px; }
+.arenas ul { margin: 0; padding: 0; list-style: none; font-family: var(--font-mono); font-size: 13px; color: var(--muted); columns: 2; }
+.c-t { color: var(--crystal); } .p-t { color: var(--pot); }
+details { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 12px 16px; margin: 10px 0; }
+details summary { cursor: pointer; font-weight: 600; }
+details summary:focus-visible { outline: 2px solid var(--crystal); outline-offset: 4px; }
+details p { margin: 10px 0 0; }
+@media (max-width: 820px) {
+  .wrap { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  nav.toc { position: static; margin-bottom: 24px; }
+  nav.toc ol { display: flex; flex-wrap: wrap; gap: 4px 6px; }
+  nav.toc a { background: var(--surface); border: 1px solid var(--line); }
+}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+
+<div class="wrap">
+  <nav class="toc" aria-label="Contenido">
+    <p>Contenido</p>
+    <ol>
+      <li><a href="#instalar">Instalar</a></li>
+      <li><a href="#kits">Kits</a></li>
+      <li><a href="#arena">Crear una arena</a></li>
+      <li><a href="#spawns">Marcar spawns</a></li>
+      <li><a href="#espectadores">Espectadores</a></li>
+      <li><a href="#hologramas">Hologramas</a></li>
+      <li><a href="#jugadores">Comandos de jugador</a></li>
+      <li><a href="#admin">Comandos de admin</a></li>
+      <li><a href="#config">Configuración</a></li>
+      <li><a href="#permisos">Permisos</a></li>
+      <li><a href="#faq">Problemas comunes</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <header class="top">
+      <p class="eyebrow">Guía del plugin</p>
+      <h1>Duels1v1 <span class="vs">·</span> Crystal <span class="vs">vs</span> Pot</h1>
+      <p class="lead">Cómo instalarlo, cómo armar tus 20 arenas, marcar los spawns, limitar espectadores y poner los hologramas.</p>
+      <div class="modes"><span class="chip c">10 arenas Crystal PvP</span><span class="chip p">10 arenas Pot PvP</span></div>
+    </header>
+
+    <h2 id="instalar">Instalar</h2>
+    <ol class="steps">
+      <li><div><strong>Servidor Paper 1.21.7 o más nuevo</strong>Con esa versión los menús salen con el estilo nuevo de Minecraft: pantalla con título, ítems con descripción y botones abajo. Desde 1.21.9, cada botón de jugador muestra también su cabeza al lado del nombre. En Paper 1.21 a 1.21.6 el plugin funciona igual, pero con menús de cofre. No funciona en Spigot.</div></li>
+      <li><div><strong>Copia los plugins a <code>plugins/</code></strong><code>Duels1v1.jar</code> (está en tu carpeta Descargas) y <a href="https://www.spigotmc.org/resources/placeholderapi.6245/" target="_blank" rel="noopener">PlaceholderAPI</a> si vas a usar hologramas. Para los hologramas también necesitas un plugin como DecentHolograms.</div></li>
+      <li><div><strong>Reinicia el servidor</strong>Se crea la carpeta <code>plugins/Duels1v1/</code> con <code>config.yml</code>. Las arenas se guardan en <code>arenas.yml</code>, los kits en <code>kits.yml</code> y los bloques de cada arena de crystal en la carpeta <code>regiones/</code>.</div></li>
+    </ol>
+    <div class="note">Usa reinicio, no <code>/reload</code>. Si un duelo estaba en curso, el plugin devuelve los inventarios igual, pero reiniciar es más seguro.</div>
+
+    <h2 id="kits">Configurar los kits</h2>
+    <p>Cada modo tiene un kit. Se toma de tu inventario tal cual: armadura, mano izquierda, barra rápida y el resto del inventario.</p>
+    <ol class="steps">
+      <li><div><strong>Ponte el kit de Crystal</strong>Armadura, totems, obsidiana, cristales, anclas, perlas, etc., en los slots donde quieres que les aparezcan.</div></li>
+      <li><div><strong>Guárdalo</strong>
+        <div class="cmd"><pre>/duel admin setkit crystal</pre><button type="button">Copiar</button></div></div></li>
+      <li><div><strong>Repite con Pot PvP</strong>
+        <div class="cmd"><pre>/duel admin setkit pot</pre><button type="button">Copiar</button></div>
+        Puedes volver a usar el comando cuando quieras para cambiar el kit.</div></li>
+    </ol>
+
+    <h2 id="arena">Crear una arena</h2>
+    <p>Usa nombres simples y en orden. Así los placeholders quedan fáciles de recordar:</p>
+    <div class="arenas">
+      <div><h4 class="c-t">Crystal PvP</h4><ul><li>crystal1</li><li>crystal2</li><li>crystal3</li><li>crystal4</li><li>crystal5</li><li>crystal6</li><li>crystal7</li><li>crystal8</li><li>crystal9</li><li>crystal10</li></ul></div>
+      <div><h4 class="p-t">Pot PvP</h4><ul><li>pot1</li><li>pot2</li><li>pot3</li><li>pot4</li><li>pot5</li><li>pot6</li><li>pot7</li><li>pot8</li><li>pot9</li><li>pot10</li></ul></div>
+    </div>
+
+    <h3 class="c-t">Arena de Crystal PvP (se rompe y se regenera)</h3>
+    <ol class="steps">
+      <li><div><strong>Construye la arena completa primero</strong>La regeneración la deja exactamente como esté cuando la guardes en el paso 5.</div></li>
+      <li><div><strong>Créala</strong><div class="cmd"><pre>/duel admin create crystal1 crystal</pre><button type="button">Copiar</button></div></div></li>
+      <li><div><strong>Marca los dos spawns</strong>Párate donde va cada jugador, mirando hacia el rival (ver <a href="#spawns">Marcar spawns</a>).
+        <div class="cmd"><pre>/duel admin setspawn1 crystal1</pre><button type="button">Copiar</button></div>
+        <div class="cmd"><pre>/duel admin setspawn2 crystal1</pre><button type="button">Copiar</button></div></div></li>
+      <li><div><strong>Marca las esquinas con la varita</strong>
+        <div class="cmd"><pre>/duel admin wand crystal1</pre><button type="button">Copiar</button></div>
+        Click izquierdo a un bloque de una esquina de abajo, click derecho a la esquina opuesta de arriba. La caja debe cubrir todo lo que se pueda romper, incluido el suelo y un poco de aire por encima.</div></li>
+      <li><div><strong>Guarda los bloques</strong><div class="cmd"><pre>/duel admin saveregion crystal1</pre><button type="button">Copiar</button></div>
+        Si después cambias algo de la arena, vuelve a usar este comando.</div></li>
+      <li><div><strong>Revisa</strong><div class="cmd"><pre>/duel admin show crystal1</pre><button type="button">Copiar</button></div>Si <code>/duel admin list</code> dice <span style="color:var(--ok)">libre</span>, ya está lista.</div></li>
+    </ol>
+
+    <h3 class="p-t">Arena de Pot PvP (no se rompe)</h3>
+    <ol class="steps">
+      <li><div><strong>Créala y pon los spawns</strong>
+        <div class="cmd"><pre>/duel admin create pot1 pot</pre><button type="button">Copiar</button></div>
+        <div class="cmd"><pre>/duel admin setspawn1 pot1</pre><button type="button">Copiar</button></div>
+        <div class="cmd"><pre>/duel admin setspawn2 pot1</pre><button type="button">Copiar</button></div></div></li>
+      <li><div><strong>Recomendado: marca las esquinas</strong>Con <code>/duel admin wand pot1</code> la arena queda protegida: nadie puede romper ni poner bloques y las explosiones no la dañan. Además, los espectadores no se pueden salir del borde. No hace falta <code>saveregion</code>.</div></li>
+    </ol>
+    <div class="note">Haz lo mismo con crystal2…crystal10 y pot2…pot10. Si todas las arenas son iguales, constrúyelas a la misma distancia una de otra y repite los pasos en cada copia.</div>
+
+    <h2 id="spawns">Marcar spawns y verlos</h2>
+    <p><code>setspawn1</code> y <code>setspawn2</code> guardan tu posición <em>y hacia dónde miras</em>. Mira hacia el centro de la arena antes de usarlos.</p>
+    <p><code>/duel admin show &lt;arena&gt;</code> dibuja la arena con partículas durante 15 segundos. Solo las ves tú:</p>
+    <div class="legend">
+      <span><i class="dot" style="background:#4cd137"></i>spawn1</span>
+      <span><i class="dot" style="background:#e84118"></i>spawn2</span>
+      <span><i class="dot" style="background:#00d2d3"></i>espectadores</span>
+      <span><i class="dot" style="background:#fbc531"></i>borde (pos1/pos2)</span>
+    </div>
+    <p>Cada spawn aparece como una columna con una pequeña flecha hacia donde mira el jugador.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Qué marcas</th><th>Comando</th><th>Cómo</th></tr></thead>
+      <tbody>
+        <tr><td>Jugador 1</td><td><code>/duel admin setspawn1 &lt;arena&gt;</code></td><td>Donde estás parado</td></tr>
+        <tr><td>Jugador 2</td><td><code>/duel admin setspawn2 &lt;arena&gt;</code></td><td>Donde estás parado</td></tr>
+        <tr><td>Espectadores</td><td><code>/duel admin setspectator &lt;arena&gt;</code></td><td>Opcional. Si no lo pones, aparecen entre los dos spawns, 6 bloques más arriba</td></tr>
+        <tr><td>Esquina 1</td><td><code>/duel admin wand &lt;arena&gt;</code></td><td>Click izquierdo a un bloque</td></tr>
+        <tr><td>Esquina 2</td><td>(misma varita)</td><td>Click derecho a un bloque</td></tr>
+        <tr><td>Esquinas sin varita</td><td><code>/duel admin pos1|pos2 &lt;arena&gt;</code></td><td>Donde estás parado</td></tr>
+      </tbody>
+    </table></div>
+
+    <h2 id="espectadores">Espectadores</h2>
+    <p>Para espectar, el jugador usa <code>/duel</code> y elige <strong>Espectar un duelo</strong>, o escribe directamente:</p>
+    <div class="cmd"><pre>/duel spectate &lt;nick&gt;</pre><button type="button">Copiar</button></div>
+    <p>El plugin le guarda el inventario, lo manda a la arena y lo pone <strong>automáticamente en modo espectador</strong> de Minecraft. Así vuela, atraviesa bloques y puede hacer click a uno de los que pelean para ver desde su cámara. Solo puede meterse en la cámara de los jugadores de ese duelo.</p>
+    <p><strong>No puede salir de la arena.</strong> La caja que marcaste con pos1/pos2 funciona como una pared invisible para el espectador, también si intenta usar el menú de teletransporte. Por eso es importante que cada arena tenga marcadas sus esquinas. Si una arena no las tiene, el límite es una distancia de 80 bloques.</p>
+    <p>Para salir:</p>
+    <ul>
+      <li>hace click en <strong>[SALIR]</strong> en el chat, o</li>
+      <li>usa <code>/duel leave</code>. La barra de acción se lo recuerda todo el tiempo.</li>
+    </ul>
+    <p>Al salir vuelve a donde estaba, con su modo de juego y sus cosas. Cuando el duelo termina, todos los espectadores salen solos.</p>
+    <div class="note">Si pones <code>setspectator</code> fuera de la caja de la arena, el plugin te avisa. Si no lo pones, el espectador aparece entre los dos spawns, siempre dentro de la arena.</div>
+
+    <h3>Límite de espectadores</h3>
+    <p>En <code>config.yml</code>:</p>
+<pre class="block">spectators:
+  enabled: true
+  max-per-arena: 10      # 0 = sin límite
+  notify-fighters: true  # avisa a los que pelean
+  gamemode: SPECTATOR    # o ADVENTURE (volando con una cama para salir)
+  border-padding: 0      # 0 = no pueden salir de la arena</pre>
+    <p>El staff con el permiso <code>duels.spectate.bypass</code> puede entrar aunque la arena esté llena. Después de cambiar la config usa <code>/duel admin reload</code>.</p>
+
+    <h2 id="hologramas">Placeholders y hologramas</h2>
+    <p>Necesitas PlaceholderAPI. Cambia <code>crystal1</code> por el nombre de cada arena:</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Placeholder</th><th>Muestra</th></tr></thead>
+      <tbody>
+        <tr><td><code>%duels_crystal1_player1%</code></td><td>Jugador 1 de esa arena, o «Esperando...»</td></tr>
+        <tr><td><code>%duels_crystal1_player2%</code></td><td>Jugador 2 de esa arena</td></tr>
+        <tr><td><code>%duels_crystal1_status%</code></td><td>Libre / En duelo / Regenerando</td></tr>
+        <tr><td><code>%duels_crystal1_spectators%</code></td><td>Cuántos están espectando</td></tr>
+        <tr><td><code>%duels_crystal1_mode%</code></td><td>Crystal PvP / Pot PvP</td></tr>
+        <tr><td><code>%duels_free_crystal%</code> / <code>%duels_free_pot%</code></td><td>Arenas libres de cada modo</td></tr>
+        <tr><td><code>%duels_playing_crystal%</code> / <code>%duels_playing_pot%</code></td><td>Jugadores peleando en cada modo</td></tr>
+        <tr><td><code>%duels_opponent%</code></td><td>Tu rival (para scoreboard)</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>Ejemplo con DecentHolograms</h3>
+    <p>Párate encima de la arena crystal1:</p>
+    <div class="cmd"><pre>/dh create crystal1 &amp;d&amp;lCRYSTAL #1</pre><button type="button">Copiar</button></div>
+    <div class="cmd"><pre>/dh line add crystal1 1 &amp;e%duels_crystal1_player1% &amp;7vs &amp;e%duels_crystal1_player2%</pre><button type="button">Copiar</button></div>
+    <div class="cmd"><pre>/dh line add crystal1 1 &amp;7Estado: &amp;f%duels_crystal1_status%</pre><button type="button">Copiar</button></div>
+    <p>Repítelo cambiando el número en cada una de las 20 arenas. El texto «Esperando...» y los estados se cambian en <code>config.yml</code>, en la sección <code>placeholders:</code>.</p>
+
+    <h2 id="jugadores">Comandos de jugador</h2>
+    <p><code>/1v1</code> y <code>/duels</code> funcionan igual que <code>/duel</code>.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Comando</th><th>Qué hace</th></tr></thead>
+      <tbody>
+        <tr><td><code>/duel</code></td><td>Menú principal: <b>Retar a un jugador</b> o <b>Espectar un duelo</b></td></tr>
+        <tr><td><code>/duel &lt;nick&gt;</code></td><td>Elegir el modo y retar a ese jugador. Con TAB te sugiere nombres mientras escribes</td></tr>
+        <tr><td><code>/duel &lt;nick&gt; crystal|pot</code></td><td>Retar directo a un modo</td></tr>
+        <tr><td><code>/duel accept &lt;nick&gt;</code></td><td>Aceptar (o click en <b>[ACEPTAR]</b> en el chat)</td></tr>
+        <tr><td><code>/duel deny &lt;nick&gt;</code></td><td>Rechazar</td></tr>
+        <tr><td><code>/duel spectate [nick]</code></td><td>Espectar el duelo de ese jugador. Sin nick abre la lista de duelos</td></tr>
+        <tr><td><code>/duel leave</code></td><td>Salir del modo espectador</td></tr>
+      </tbody>
+    </table></div>
+    <h3>Los menús</h3>
+    <p><code>/duel</code> abre <b>✦ DUELS ✦</b> con dos opciones, <b>RETAR</b> y <b>ESPECTAR</b>, cada una con su ítem y su descripción.</p>
+    <ul>
+      <li><b>RETAR</b>: arriba hay una barra <b>Buscar jugador</b> y abajo un botón por cada jugador conectado, con su cabeza y su nombre. Los verdes están libres y los rojos ya están en un duelo. Escribe parte del nombre (por ejemplo <code>jo</code>) y toca <b>⌕ Buscar</b>: solo quedan los que tienen esas letras, primero los que empiezan con ellas. Si hay uno solo, pasa directo a elegir el modo.</li>
+      <li>Luego eliges <b>CRYSTAL PVP</b> o <b>POT PVP</b> y el reto le llega al otro por el chat.</li>
+      <li><b>ESPECTAR</b>: muestra un botón por cada duelo en curso, por ejemplo <code>jonnave vs Steve</code>. Al pasar el mouse ves el modo, la arena y cuántos espectadores hay.</li>
+    </ul>
+    <p>Los textos de estos menús se cambian en <code>config.yml</code>, en la sección <code>dialogs:</code>. Si prefieres los menús de cofre, pon <code>menus.style: chest</code>. En los de cofre, la búsqueda es un yunque que muestra los resultados mientras escribes.</p>
+
+    <h2 id="admin">Comandos de admin</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Comando</th><th>Qué hace</th></tr></thead>
+      <tbody>
+        <tr><td><code>/duel admin create &lt;arena&gt; crystal|pot</code></td><td>Crear arena</td></tr>
+        <tr><td><code>/duel admin setspawn1|setspawn2 &lt;arena&gt;</code></td><td>Spawns de los jugadores</td></tr>
+        <tr><td><code>/duel admin setspectator &lt;arena&gt;</code></td><td>Spawn de espectadores</td></tr>
+        <tr><td><code>/duel admin wand &lt;arena&gt;</code></td><td>Varita para marcar esquinas</td></tr>
+        <tr><td><code>/duel admin pos1|pos2 &lt;arena&gt;</code></td><td>Esquinas donde estás parado</td></tr>
+        <tr><td><code>/duel admin show &lt;arena&gt;</code></td><td>Ver spawns y borde con partículas</td></tr>
+        <tr><td><code>/duel admin saveregion &lt;arena&gt;</code></td><td>Guardar los bloques (crystal)</td></tr>
+        <tr><td><code>/duel admin regen &lt;arena&gt;</code></td><td>Regenerar a mano</td></tr>
+        <tr><td><code>/duel admin setkit crystal|pot</code></td><td>Guardar tu inventario como kit</td></tr>
+        <tr><td><code>/duel admin list</code></td><td>Ver todas las arenas y su estado</td></tr>
+        <tr><td><code>/duel admin info &lt;arena&gt;</code></td><td>Detalles y qué le falta</td></tr>
+        <tr><td><code>/duel admin tp &lt;arena&gt;</code></td><td>Ir a la arena</td></tr>
+        <tr><td><code>/duel admin delete &lt;arena&gt;</code></td><td>Borrar arena</td></tr>
+        <tr><td><code>/duel admin reload</code></td><td>Recargar config y kits</td></tr>
+      </tbody>
+    </table></div>
+
+    <h2 id="config">Configuración (<code>config.yml</code>)</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Opción</th><th>Por defecto</th><th>Para qué</th></tr></thead>
+      <tbody>
+        <tr><td><code>request-expire-seconds</code></td><td>60</td><td>Tiempo para aceptar un duelo</td></tr>
+        <tr><td><code>countdown-seconds</code></td><td>5</td><td>Cuenta regresiva (los jugadores quedan congelados)</td></tr>
+        <tr><td><code>end-delay-seconds</code></td><td>3</td><td>Tiempo que el ganador se queda en la arena</td></tr>
+        <tr><td><code>max-duration-seconds</code></td><td>600</td><td>Si se acaba el tiempo, es empate. 0 = sin límite</td></tr>
+        <tr><td><code>regen-blocks-per-tick</code></td><td>30000</td><td>Velocidad de regeneración. Bájalo si da lag</td></tr>
+        <tr><td><code>broadcast-start</code></td><td>false</td><td>Anunciar «X vs Y» a todo el servidor</td></tr>
+        <tr><td><code>broadcast-winner</code></td><td>true</td><td>Anunciar «Duels: X ganó el duelo contra Y» a todo el servidor</td></tr>
+        <tr><td><code>allowed-commands-in-duel</code></td><td>/msg /r /tell</td><td>Comandos permitidos dentro del duelo</td></tr>
+      </tbody>
+    </table></div>
+    <p>Todos los mensajes están en <code>messages:</code> con formato <a href="https://docs.advntr.dev/minimessage/format.html" target="_blank" rel="noopener">MiniMessage</a> (<code>&lt;red&gt;</code>, <code>&lt;bold&gt;</code>, <code>&lt;#ff5500&gt;</code>…). Variables: <code>{jugador1}</code> <code>{jugador2}</code> <code>{ganador}</code> <code>{perdedor}</code> <code>{modo}</code> <code>{arena}</code>.</p>
+<pre class="block">duel-start: "&lt;yellow&gt;{jugador1} &lt;gray&gt;vs&lt;/gray&gt; {jugador2}"
+duel-winner: "&lt;gold&gt;Duels:&lt;/gold&gt; &lt;green&gt;{ganador}&lt;/green&gt; &lt;gray&gt;gano el duelo contra&lt;/gray&gt; &lt;red&gt;{perdedor}&lt;/red&gt;"</pre>
+
+    <h2 id="permisos">Permisos</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Permiso</th><th>Quién lo tiene</th><th>Para qué</th></tr></thead>
+      <tbody>
+        <tr><td><code>duels.use</code></td><td>Todos</td><td>Usar /duel, retar y espectar</td></tr>
+        <tr><td><code>duels.spectate.bypass</code></td><td>OP</td><td>Espectar aunque la arena esté llena</td></tr>
+        <tr><td><code>duels.admin</code></td><td>OP</td><td>Comandos de admin, editar arenas, usar comandos dentro del duelo</td></tr>
+      </tbody>
+    </table></div>
+
+    <h2 id="faq">Problemas comunes</h2>
+    <details><summary>«No hay arenas libres»</summary>
+      <p>Todas las arenas de ese modo están ocupadas o incompletas. Usa <code>/duel admin list</code>: las que dicen <em>incompleta</em> necesitan spawns y, si son de crystal, también pos1, pos2 y <code>saveregion</code>.</p></details>
+    <details><summary>«El kit todavía no está configurado»</summary>
+      <p>Falta <code>/duel admin setkit crystal</code> o <code>/duel admin setkit pot</code>.</p></details>
+    <details><summary>La arena de crystal no queda igual después de regenerar</summary>
+      <p>La caja de pos1/pos2 no cubre todo. Usa <code>/duel admin show</code> para ver el borde, agrándalo con la varita y vuelve a usar <code>saveregion</code> con la arena en buen estado.</p></details>
+    <details><summary>No puedo romper bloques en mi arena mientras la construyo</summary>
+      <p>Solo pueden editar arenas los que tienen <code>duels.admin</code> y no están en un duelo ni espectando.</p></details>
+    <details><summary>Un jugador se desconectó a mitad del duelo</summary>
+      <p>Pierde el duelo y el plugin le devuelve sus cosas antes de que salga. Si el servidor se cae, al volver a entrar recupera su inventario, que estaba guardado en <code>plugins/Duels1v1/inventarios/</code>.</p></details>
+    <details><summary>La regeneración da lag</summary>
+      <p>Baja <code>regen-blocks-per-tick</code> a 10000 o 5000. La arena tardará un poco más en quedar libre.</p></details>
+  </main>
+</div>
+
+<script>
+document.querySelectorAll('.cmd button').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    var text = btn.previousElementSibling.textContent;
+    var done = function () { btn.textContent = 'Copiado'; setTimeout(function () { btn.textContent = 'Copiar'; }, 1400); };
+    try {
+      navigator.clipboard.writeText(text).then(done, function () { select(btn.previousElementSibling); });
+    } catch (e) { select(btn.previousElementSibling); }
+  });
+});
+function select(el) {
+  var r = document.createRange(); r.selectNodeContents(el);
+  var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+}
+</script>
+
+</html>
